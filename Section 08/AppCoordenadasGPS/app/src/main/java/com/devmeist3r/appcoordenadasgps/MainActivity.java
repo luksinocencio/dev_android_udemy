@@ -1,9 +1,12 @@
 package com.devmeist3r.appcoordenadasgps;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -20,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_CONTACTS
     };
 
-    public static  final int APP_PERMISSOES_ID = 2021;
+    public static final int APP_PERMISSOES_ID = 2021;
 
     TextView txtValorLatitude, txtValorLongitude;
 
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void obterCoordenadas() {
-        boolean permissaoAtiva = true;
+        boolean permissaoAtiva = false;
 
         if (permissaoAtiva) {
             capturarUltimaLocalizacaoValida();
@@ -79,8 +82,26 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> permissoesNegadas = new ArrayList<>();
 
-        
+        int permissaoNegada;
 
-        return true;
+        for (String permissao : this.permissoesRequiridas) {
+            permissaoNegada = ContextCompat.checkSelfPermission(MainActivity.this, permissao);
+
+            if (permissaoNegada != PackageManager.PERMISSION_GRANTED) {
+                permissoesNegadas.add(permissao);
+            }
+        }
+
+
+        if (!permissoesNegadas.isEmpty()) {
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    permissoesNegadas.toArray(new String[permissoesNegadas.size()]),
+                    APP_PERMISSOES_ID
+            );
+            return false;
+        } else {
+            return true;
+        }
     }
 }
