@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void obterCoordenadas() {
-        boolean permissaoAtiva = false;
+        boolean permissaoAtiva = solicitarPermissaoParaObterLocalizacao();
 
         if (permissaoAtiva) {
             capturarUltimaLocalizacaoValida();
